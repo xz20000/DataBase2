@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
     ViewGroup viewGroup = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanc eState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
         visitWebBtn.setOnClickListener(new View.OnClickListener() {
