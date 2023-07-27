@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.gson.Gson;
 
 public class MainActivity extends Activity {
     Button visitWebBtn = null;
@@ -31,11 +33,17 @@ public class MainActivity extends Activity {
     String resultStr = "";
     ProgressBar progressBar = null;
     ViewGroup viewGroup = null;
+
+    public void GsonTest(){
+        Gson gson = new Gson();
+        //gson.toJson(new());
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
+
         visitWebBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -89,14 +97,21 @@ public class MainActivity extends Activity {
     private String getURLResponse(String urlString){
         HttpURLConnection conn = null; //连接对象
         InputStream is = null;
+        OutputStream out = null;
         String resultData = "";
         try {
             URL url = new URL(urlString); //URL对象
             conn = (HttpURLConnection)url.openConnection(); //使用URL打开一个链接
             conn.setDoInput(true); //允许输入流，即允许下载
-            conn.setDoOutput(false); //允许输出流，即允许上传
-            conn.setUseCaches(false); //不使用缓冲
-            conn.setRequestMethod("GET"); //使用get请求
+            conn.setDoOutput(true); //允许输出流，即允许上传
+            conn.setUseCaches(true); //使用缓冲
+            conn.setRequestMethod("POST"); //请求方式
+            conn.setRequestProperty("Authorization", "111");
+            conn.setRequestProperty("Content-Type","application/json");
+            out=conn.getOutputStream();
+            String str = "{\"code\":\"\",\"password\":\"123456\",\"username\":\"admin\",\"uuid\":\"\"}";
+            out.write(str.getBytes());
+            out.flush();
             is = conn.getInputStream();   //获取输入流，此时才真正建立链接
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader bufferReader = new BufferedReader(isr);
@@ -157,7 +172,7 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            String data = getURLResponse("http://8.140.22.222//web/api/DbNotice/list");
+            String data = getURLResponse("http://pyh.pokewu.com/web/api/login");
             resultStr = data;
         }
 
